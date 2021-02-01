@@ -2,82 +2,75 @@ function selfRandom(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-var fs = (function() {
+var buffer = (function () {
     var _interface = {
-        buffer: [],
-    }
-    return {
-        addRow: function(d) {
-            console.log(d);
-            _interface.buffer.push(unescape(encodeURIComponent(d)))
+        buffer: {},
+        init: function () {
+            this.buffer = localStorage.getItem("results")
+                ? JSON.parse(localStorage.getItem("result"))
+                : {};
         },
-        getRow: function() {
-            var type = 'data:application/plain;content-disposition=attachment;filename=test.txt;base64, ';
-            var text = _interface.buffer.join('\n');
-            return type + btoa(text);
+        add: function (group, data) {
+            if (!this.buffer[group]) {
+                this.buffer[group] = [];
+            }
+
+            this.buffer[group].push(data);
+
+            localStorage.setItem("results", JSON.stringify(this.buffer));
         }
-    }
+    };
+
+    return _interface;
 })();
 
-var collection = (function (w) {
-    return {
-        groups: [
-            "Регион 1",
-            "Регион 2",
-            "Регион 3",
-            "Регион 4",
-            "Регион 5",
-            "Регион 6",
-            "Регион 7",
-            "Регион 8",
-            "Регион 9"
-        ],
-        data: [
-            {
-                title: "VI",
-                variants: [
-                    {
-                        title: "Зима в городе",
-                        group: "Старшая группа"
-                    },
-                    {
-                        title: "Зимние игры и забавы. Зимние хлопоты",
-                        group: "Подготовительная группа"
-                    },
-                    {
-                        title: "Азбука безопасности.",
-                        group: "Старшая группа"
-                    },
-                    {
-                        title: "Миром правит доброта",
-                        group: "Подготовительная группа"
-                    },
-                    {
-                        title: "Россия и ее соседи",
-                        group: "Старшая группа"
-                    },
-                    {
-                        title: "Наша планета (страны и континенты)",
-                        group: "Подготовительная группа"
-                    },
-                    {
-                        title:
-                            'Мир профессий "Все профессии нужны, все профессии важны"',
-                        group: "Старшая группа"
-                    },
-                    {
-                        title: "Наша планета (страны и континенты)",
-                        group: "Подготовительная группа"
-                    },
-                    {
-                        title: "Миром правит доброта",
-                        group: "Подготовительная группа"
-                    }
-                ]
-            }
-        ]
+var groups = (function () {
+    var _interface = {
+        collection: null,
+        promise: null
     };
-})(window);
+
+    _interface.promise = new Promise(function (resolve, reject) {
+        var xhr = new XMLHttpRequest();
+
+        xhr.open("GET", "/static/groups.json");
+        xhr.send();
+        xhr.onload = function () {
+            _interface.collection = JSON.parse(xhr.response);
+
+            resolve(_interface);
+        };
+        xhr.onerror = function () {
+            reject("Error");
+        };
+    });
+
+    return _interface;
+})();
+
+var tasks = (function () {
+    var _interface = {
+        collection: null,
+        promise: null
+    };
+
+    _interface.promise = new Promise(function (resolve, reject) {
+        var xhr = new XMLHttpRequest();
+
+        xhr.open("GET", "/static/tasks.json");
+        xhr.send();
+        xhr.onload = function () {
+            _interface.collection = JSON.parse(xhr.response);
+
+            resolve(_interface);
+        };
+        xhr.onerror = function () {
+            reject("Error");
+        };
+    });
+
+    return _interface;
+})();
 
 var render = (function () {
     var group = function (n, t) {
@@ -99,13 +92,7 @@ var render = (function () {
                 this.w.classList.add("wrapper");
                 this.z.classList.add("task");
 
-                var _ = this;
-
-                this.n.addEventListener('click', function(e) {
-                    _.n.download = 'result.txt';
-                    _.n.href=fs.getRow();
-
-                })
+                return this;
             },
             setActive: function (s) {
                 if (s) {
@@ -115,15 +102,23 @@ var render = (function () {
                     this.e.classList.toggle("no-active", s);
                     this.e.classList.toggle("active", !s);
                 }
+
+                return this;
             },
             setNumber: function (d) {
                 this.n.textContent = d;
+
+                return this;
             },
             setTitle: function (d) {
                 this.t.textContent = d;
+
+                return this;
             },
             setTask: function (d) {
                 this.z.textContent = d;
+
+                return this;
             }
         };
 
@@ -146,7 +141,12 @@ var render = (function () {
             .getElementsByClassName("info-bar")[0]
             .getElementsByClassName("group")[0],
         listGroupsWrapper: document.getElementsByClassName("list-group")[0],
+        clearGroupsList: function () {
+            this.listGroupsWrapper.innerHTML = "";
+        },
         updateGroupsList: function (l) {
+            this._groups = [];
+
             for (var i = 0; i < l.length; i++) {
                 this._groups.push(group(i + 1, l[i].group));
                 this.listGroupsWrapper.appendChild(this._groups[i].e);
@@ -168,57 +168,85 @@ var render = (function () {
         update: _interface.update.bind(_interface),
         updateInfoGroupTitle: _interface.updateInfoGroupTitle.bind(_interface),
         updateGroupsList: _interface.updateGroupsList.bind(_interface),
-        getGroupByIndex: _interface.getGroupByIndex.bind(_interface)
+        getGroupByIndex: _interface.getGroupByIndex.bind(_interface),
+        clearGroupsList: _interface.clearGroupsList.bind(_interface)
     };
 })();
 
 var app = (function (w) {
-    render.updateInfoGroupTitle(collection.data[0].title);
-    render.updateGroupsList(collection.data[0].variants);
-
-    var nums = new Array(collection.data[0].variants.length)
-        .fill(1)
-        .map(function (a, i) {
-            return i;
-        });
-
-    var current = 0;
+    var groupCurrent = 0;
+    var taskCurrent = 0;
 
     var CTA = {
         active: true,
+        nums: [],
         e: document.getElementsByClassName("CTA")[0],
         click: function () {
-            if (nums.length > 0 && CTA.active) {
-                this.e.classList.add("active");
-                this.active = false;
-                var n = selfRandom(0, nums.length - 1);
-                var _n = nums[n];
+            var _ = this;
 
-                var e = render.getGroupByIndex(_n);
+            if (this.nums.length - 1 && this.active) {
+                this.active = false;
+                this.e.classList.add("active");
+
+                var n = selfRandom(0, this.nums.length - 1);
+
+                var e = render.getGroupByIndex(this.nums[n]);
 
                 if (e) {
-                    e.setActive(true);
-                    e.setTitle(collection.groups[current]);
-                    e.setTask(
-                        collection.data[0].variants[_n].title +
-                            " (" +
-                            collection.data[0].variants[_n].group +
-                            ")"
+                    e.setActive(true)
+                        .setTitle(
+                            groups.collection[groupCurrent].participants[
+                                8 - (this.nums.length - 1)
+                            ].region
+                        )
+                        .setTask(
+                            tasks.collection[taskCurrent][this.nums[n]].title +
+                                " | " +
+                                tasks.collection[taskCurrent][this.nums[n]].age
+                        );
+
+                    buffer.add(groups.collection[groupCurrent].title,
+                        {
+                            number: this.nums[n] + 1,
+                            task:
+                                tasks.collection[taskCurrent][this.nums[n]]
+                                    .title,
+                            group:
+                                tasks.collection[taskCurrent][this.nums[n]].age,
+                            region:
+                                groups.collection[groupCurrent].participants[
+                                    8 - (this.nums.length - 1)
+                                ].region
+                        }
                     );
                 }
 
-                nums.splice(n, 1);
-                CTA.updateNumber(_n + 1);
+                this.updateNumber(this.nums[n]);
 
-                fs.addRow(_n + 1 + ": " + collection.groups[current] + " : " + collection.data[0].variants[_n].title + " | " + collection.data[0].variants[_n].group )
+                this.nums.splice(n, 1);
 
                 setTimeout(function () {
-                    CTA.active = true;
-                    CTA.e.classList.remove("active");
-                    CTA.updateNumber("");
+                    _.active = true;
+                    _.e.classList.remove("active");
+                    _.updateNumber('')
                 }, 3000);
+            } else if (this.active) {
+                groupCurrent++;
+                taskCurrent++;
 
-                current ++;
+                if (
+                    groupCurrent < groups.collection.length &&
+                    taskCurrent < tasks.collection.length
+                ) {
+                    render.clearGroupsList();
+                    render.updateInfoGroupTitle(
+                        groups.collection[groupCurrent].num
+                    );
+                    this.updateTasks(taskCurrent);
+                    render.updateGroupsList(tasks.collection[taskCurrent]);
+                } else {
+                    render.clearGroupsList();
+                }
             }
         },
         updateNumber: function (d) {
@@ -226,10 +254,23 @@ var app = (function (w) {
         },
         init: function () {
             this.e.addEventListener("click", this.click.bind(this));
+            this.updateTasks(taskCurrent);
+        },
+        updateTasks: function (c) {
+            this.nums = new Array(tasks.collection[c].length)
+                .fill(1)
+                .map(function (a, i) {
+                    return i;
+                });
         }
     };
 
-    CTA.init();
+    Promise.all([groups.promise, tasks.promise]).then(function (data) {
+        render.updateInfoGroupTitle(groups.collection[groupCurrent].num);
+        render.updateGroupsList(tasks.collection[taskCurrent]);
+
+        CTA.init();
+    });
 
     return {
         cta: CTA
