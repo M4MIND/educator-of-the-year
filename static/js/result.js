@@ -1,17 +1,13 @@
 var theadListKeys = [
     '#',
     'Задание',
-    'Группа',
     'Регион',
-    'ФИО участника'
 ]
 
 var tbodyListKeys = [
     'number',
     'task',
-    'group',
     'region',
-    'name'
 ]
 
 var main = (function () {

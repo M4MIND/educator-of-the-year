@@ -194,13 +194,13 @@ var members = (function () {
             setNumberBudget: function (d) {
                 this.n.textContent = d;
             },
-            setActive: function(s) {
+            setActive: function (s) {
                 this.active = s;
-                
+
                 this.e.classList.toggle('active', this.active);
 
                 return this;
-            } 
+            }
         };
 
         return _.create();
@@ -324,16 +324,14 @@ var _app = (function () {
                     members
                         .getByIndex(memberPosition)
                         .setActive(true)
-                        .p.setTitle("<b>" + region.region  + "</b></br><span>" + result.title + "</span>")
+                        .p.setTitle("<b>" + region + "</b></br><span>" + result.title + "</span>")
                         .setActive(true);
 
                     buffer.add(groups.collection[_interface.groupCount].title,
                         {
                             number: n + 1,
                             task: result.title,
-                            group: result.age,
-                            region: region.region,
-                            name: region.name
+                            region: region,
                         }
                     )
 
@@ -357,7 +355,7 @@ var _app = (function () {
                             }
 
                             groupInfo.setNumber(groups.collection[_interface.groupCount].num)
-                           
+
                         });
 
                     } else {
