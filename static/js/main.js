@@ -72,227 +72,16 @@ var tasks = (function () {
     return _interface;
 })();
 
-/* 
-
-
-
-var render = (function () {
-    var group = function (n, t) {
-        var _interface = {
-            e: document.createElement("div"),
-            n: document.createElement("a"),
-            t: document.createElement("div"),
-            w: document.createElement("div"),
-            z: document.createElement("div"),
-            init: function () {
-                this.e.appendChild(this.n);
-                this.e.appendChild(this.w);
-                this.w.appendChild(this.t);
-                this.w.appendChild(this.z);
-
-                this.e.classList.add("group", "no-active");
-                this.n.classList.add("number");
-                this.t.classList.add("title");
-                this.w.classList.add("wrapper");
-                this.z.classList.add("task");
-
-                return this;
-            },
-            setActive: function (s) {
-                if (s) {
-                    this.e.classList.toggle("no-active", !s);
-                    this.e.classList.toggle("active", s);
-                } else {
-                    this.e.classList.toggle("no-active", s);
-                    this.e.classList.toggle("active", !s);
-                }
-
-                return this;
-            },
-            setNumber: function (d) {
-                this.n.textContent = d;
-
-                return this;
-            },
-            setTitle: function (d) {
-                this.t.textContent = d;
-
-                return this;
-            },
-            setTask: function (d) {
-                this.z.textContent = d;
-
-                return this;
-            }
-        };
-
-        if (n) {
-            _interface.setNumber(n);
-        }
-
-        if (t) {
-            _interface.setTitle(t);
-        }
-
-        _interface.init();
-
-        return _interface;
-    };
-
-    var _interface = {
-        _groups: [],
-        groupWrapper: document
-            .getElementsByClassName("info-bar")[0]
-            .getElementsByClassName("group")[0],
-        listGroupsWrapper: document.getElementsByClassName("list-group")[0],
-        clearGroupsList: function () {
-            this.listGroupsWrapper.innerHTML = "";
-        },
-        updateGroupsList: function (l) {
-            this._groups = [];
-
-            for (var i = 0; i < l.length; i++) {
-                this._groups.push(group(i + 1, l[i].group));
-                this.listGroupsWrapper.appendChild(this._groups[i].e);
-            }
-        },
-        updateInfoGroupTitle: function (d) {
-            this.groupWrapper.getElementsByClassName(
-                "number"
-            )[0].textContent = d;
-        },
-        getGroupByIndex: function (n) {
-            return this._groups[n];
-        },
-        draw: function () {},
-        update: function () {}
-    };
-
-    return {
-        update: _interface.update.bind(_interface),
-        updateInfoGroupTitle: _interface.updateInfoGroupTitle.bind(_interface),
-        updateGroupsList: _interface.updateGroupsList.bind(_interface),
-        getGroupByIndex: _interface.getGroupByIndex.bind(_interface),
-        clearGroupsList: _interface.clearGroupsList.bind(_interface)
-    };
-})();
-
-var app = (function (w) {
-    var groupCurrent = 0;
-    var taskCurrent = 0;
-
-    var CTA = {
-        active: true,
-        nums: [],
-        e: document.getElementsByClassName("CTA")[0],
-        click: function () {
-            var _ = this;
-
-            if (this.nums.length - 1 && this.active) {
-                this.active = false;
-                this.e.classList.add("active");
-
-                var n = selfRandom(0, this.nums.length - 1);
-
-                var e = render.getGroupByIndex(this.nums[n]);
-
-                if (e) {
-                    e.setActive(true)
-                        .setTitle(
-                            groups.collection[groupCurrent].participants[
-                                8 - (this.nums.length - 1)
-                            ].region
-                        )
-                        .setTask(
-                            tasks.collection[taskCurrent][this.nums[n]].title +
-                                " | " +
-                                tasks.collection[taskCurrent][this.nums[n]].age
-                        );
-
-                    buffer.add(groups.collection[groupCurrent].title,
-                        {
-                            number: this.nums[n] + 1,
-                            task:
-                                tasks.collection[taskCurrent][this.nums[n]]
-                                    .title,
-                            group:
-                                tasks.collection[taskCurrent][this.nums[n]].age,
-                            region:
-                                groups.collection[groupCurrent].participants[
-                                    8 - (this.nums.length - 1)
-                                ].region
-                        }
-                    );
-                }
-
-                this.updateNumber(this.nums[n]);
-
-                this.nums.splice(n, 1);
-
-                setTimeout(function () {
-                    _.active = true;
-                    _.e.classList.remove("active");
-                    _.updateNumber('')
-                }, 3000);
-            } else if (this.active) {
-                groupCurrent++;
-                taskCurrent++;
-
-                if (
-                    groupCurrent < groups.collection.length &&
-                    taskCurrent < tasks.collection.length
-                ) {
-                    render.clearGroupsList();
-                    render.updateInfoGroupTitle(
-                        groups.collection[groupCurrent].num
-                    );
-                    this.updateTasks(taskCurrent);
-                    render.updateGroupsList(tasks.collection[taskCurrent]);
-                } else {
-                    render.clearGroupsList();
-                }
-            }
-        },
-        updateNumber: function (d) {
-            this.e.getElementsByClassName("back")[0].textContent = d;
-        },
-        init: function () {
-            this.e.addEventListener("click", this.click.bind(this));
-            this.updateTasks(taskCurrent);
-        },
-        updateTasks: function (c) {
-            this.nums = new Array(tasks.collection[c].length)
-                .fill(1)
-                .map(function (a, i) {
-                    return i;
-                });
-        }
-    };
-
-    Promise.all([groups.promise, tasks.promise]).then(function (data) {
-        render.updateInfoGroupTitle(groups.collection[groupCurrent].num);
-        render.updateGroupsList(tasks.collection[taskCurrent]);
-
-        CTA.init();
-    });
-
-    return {
-        cta: CTA
-    };
-})(window);
-
- */
-
- var groupInfo = (function() {
+var groupInfo = (function () {
     var _interface = {
         e: document.getElementsByClassName('group-number')[0],
-        setNumber: function(d) {
-            this.e.textContent = d; 
+        setNumber: function (d) {
+            this.e.textContent = d;
         }
     }
 
     return _interface;
- })();
+})();
 
 var members = (function () {
     var _interface = {
@@ -341,7 +130,7 @@ var members = (function () {
                     return this;
                 },
                 setTitle: function (d) {
-                    this.t.textContent = d;
+                    this.t.innerHTML = d;
 
                     return this;
                 },
@@ -373,13 +162,17 @@ var members = (function () {
         var _ = {
             e: document.createElement("li"),
             b: document.createElement("div"),
+            n: document.createElement("div"),
             p: _panel(),
+            active: false,
             create: function () {
                 this.e.appendChild(this.b);
+                this.b.appendChild(this.n);
                 this.e.appendChild(this.p.e);
 
                 this.e.classList.add("item");
                 this.b.classList.add("budget");
+                this.n.classList.add("number");
 
                 return this;
             },
@@ -397,7 +190,17 @@ var members = (function () {
                 this.p.remove(function () {
                     _.e.remove();
                 });
-            }
+            },
+            setNumberBudget: function (d) {
+                this.n.textContent = d;
+            },
+            setActive: function(s) {
+                this.active = s;
+                
+                this.e.classList.toggle('active', this.active);
+
+                return this;
+            } 
         };
 
         return _.create();
@@ -428,6 +231,47 @@ var _cta = (function () {
     return _interface;
 })();
 
+
+var groupListContainer = (function () {
+    var _p = function () {
+        var _ = {
+            e: document.createElement('li'),
+            setTitle: function (d) {
+                this.e.textContent = d;
+            },
+            init: function () {
+                this.e.classList.add('test');
+            },
+            remove: function () {
+                this.e.remove();
+            }
+        }
+
+        _.init();
+
+        return _;
+    }
+
+    return {
+        e: document.getElementsByClassName('group-info-list')[0],
+        collection: [],
+        clear: function () {
+            return this;
+        },
+        add: function () {
+            this.collection.push(_p());
+
+            this.e.appendChild(this.collection[this.collection.length - 1].e);
+
+            return this.collection[this.collection.length - 1];
+        },
+        removeByIndex: function (i) {
+            this.collection[i].remove();
+            this.collection.splice(i, 1);
+        }
+    }
+})();
+
 var container = (function () {
     return {
         e: document.getElementsByClassName("container")[0],
@@ -441,6 +285,7 @@ var _app = (function () {
     var _interface = {
         count: 0,
         groupCount: 0,
+        mebers: [],
         init: function () {
             Promise.all([groups.promise, tasks.promise])
                 .then(function (d) {
@@ -457,6 +302,13 @@ var _app = (function () {
                     _interface.count <
                     groups.collection[_interface.groupCount].participants.length
                 ) {
+                    // Random position
+                    var m = selfRandom(0, _app.mebers.length - 1)
+                    var memberPosition = _app.mebers[m];
+
+                    _app.mebers.splice(m, 1);
+
+                    // Random task
                     var n = selfRandom(
                         0,
                         tasks.collection[_interface.groupCount].length - 1
@@ -464,12 +316,15 @@ var _app = (function () {
                     var result = tasks.collection[_interface.groupCount][n];
                     var region = groups.collection[_interface.groupCount].participants[_interface.count];
 
+                    groupListContainer.removeByIndex(0);
+
                     tasks.collection[_interface.groupCount].splice(n, 1);
+                    _app.mebers.slice(m, 1);
 
                     members
-                        .getByIndex(_interface.count)
-                        .p.setTitle(result.title)
-                        .setNumber(result.num)
+                        .getByIndex(memberPosition)
+                        .setActive(true)
+                        .p.setTitle("<b>" + region.region  + "</b></br><span>" + result.title + "</span>")
                         .setActive(true);
 
                     buffer.add(groups.collection[_interface.groupCount].title,
@@ -496,12 +351,15 @@ var _app = (function () {
                                     .participants.length;
                                 i++
                             ) {
-                                members.add();
+                                members.add().setNumberBudget(i + 1);
+                                _app.mebers.push(i);
+                                groupListContainer.add().setTitle(groups.collection[_interface.groupCount].participants[i].region)
                             }
 
                             groupInfo.setNumber(groups.collection[_interface.groupCount].num)
+                           
                         });
-                        
+
                     } else {
                         container.setActive(false);
                     }
@@ -513,7 +371,9 @@ var _app = (function () {
                 i < groups.collection[this.groupCount].participants.length;
                 i++
             ) {
-                members.add();
+                members.add().setNumberBudget(i + 1);
+                _app.mebers.push(i);
+                groupListContainer.add().setTitle(groups.collection[this.groupCount].participants[i].region)
             }
 
             groupInfo.setNumber(groups.collection[this.groupCount].num)
