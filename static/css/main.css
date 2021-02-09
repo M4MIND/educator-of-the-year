@@ -169,8 +169,7 @@ body {
     justify-content: center;
     font-size: 2.6rem;
     color: #fff;
-    line-height: 2.6rem;
-
+    line-height: 2.4rem;
     transition: 350ms;
 }
 
@@ -228,8 +227,13 @@ body {
     text-transform: uppercase;
 }
 
+.timeline-cmp .timeline .item .panel .title b {
+    font-weight: bolder;
+}
+
+
 .timeline-cmp .timeline .item .panel .title span {
-    font-size: 0.9rem;
+    font-size: 1.3rem;
 }
 
 .timeline-cmp .timeline .item .panel .description {
@@ -332,6 +336,12 @@ body {
     height: 3rem;
     left: 112px;
     top: 150px;
+    animation: linear;
+}
+
+
+.cta.active .front {
+    opacity: 0;
 }
 
 @keyframes animate {
@@ -372,11 +382,6 @@ body {
 
     color: rgba(255, 255, 255, 0);
 }
-
-.cta.active .front {
-    opacity: 0;
-}
-
 .cta.active .back {
     transform: rotateZ(0deg);
     color: rgba(255, 255, 255, 255);

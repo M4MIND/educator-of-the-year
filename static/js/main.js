@@ -214,8 +214,8 @@ var _cta = (function () {
         active: true,
         e: document.getElementsByClassName("cta")[0],
         b: document.getElementsByClassName("cta")[0].getElementsByClassName("back")[0],
-        changeNumber: function(d) {
-                this.b.textContent = d; 
+        changeNumber: function (d) {
+            this.b.textContent = d;
         },
         click: function (callback, _callback) {
             this.e.addEventListener("click", function () {
@@ -331,12 +331,12 @@ var _app = (function () {
                     members
                         .getByIndex(memberPosition)
                         .setActive(true)
-                        .p.setTitle("<b>" + region + "</b></br><span>" + result.title + "</span>")
+                        .p.setTitle("<b>" + region + "</b></br><span>Тема " + result.num.split('-')[1] + ": " + result.title + " - " + result.age + "</span>")
                         .setActive(true);
 
                     buffer.add(groups.collection[_interface.groupCount].title,
                         {
-                            number: n + 1,
+                            number: result.num,
                             task: result.title,
                             region: region,
                         }
@@ -373,9 +373,10 @@ var _app = (function () {
                         }, 2000)
                     } else {
                         container.setActive(false);
+                        alert('Жеребьевка завершена')
                     }
                 }
-            }, function() {
+            }, function () {
                 _cta.changeNumber('')
             });
 
