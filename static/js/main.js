@@ -213,7 +213,11 @@ var _cta = (function () {
     var _interface = {
         active: true,
         e: document.getElementsByClassName("cta")[0],
-        click: function (callback) {
+        b: document.getElementsByClassName("cta")[0].getElementsByClassName("back")[0],
+        changeNumber: function(d) {
+                this.b.textContent = d; 
+        },
+        click: function (callback, _callback) {
             this.e.addEventListener("click", function () {
                 if (_interface.active) {
                     _interface.active = false;
@@ -221,6 +225,7 @@ var _cta = (function () {
                     setTimeout(function () {
                         _interface.active = true;
                         _interface.e.classList.toggle("active", !_interface.active)
+                        _callback();
                     }, 1500);
                     callback();
                 }
@@ -292,7 +297,7 @@ var _app = (function () {
                     _interface.run();
                 })
                 .catch(function (e) {
-                    alert("Ошибка");
+                    alert("Ошибка, не удалось загрузить файлы group.json tasks.json");
                     console.error(e);
                 });
         },
@@ -318,6 +323,8 @@ var _app = (function () {
 
                     groupListContainer.removeByIndex(0);
 
+                    _cta.changeNumber(memberPosition + 1)
+
                     tasks.collection[_interface.groupCount].splice(n, 1);
                     _app.mebers.slice(m, 1);
 
@@ -339,6 +346,8 @@ var _app = (function () {
                 } else {
                     _interface.groupCount++;
 
+                    container.setActive(false);
+
                     if (groups.collection[_interface.groupCount]) {
                         _interface.count = 0;
                         members.clear(function () {
@@ -351,17 +360,23 @@ var _app = (function () {
                             ) {
                                 members.add().setNumberBudget(i + 1);
                                 _app.mebers.push(i);
-                                groupListContainer.add().setTitle(groups.collection[_interface.groupCount].participants[i].region)
+                                groupListContainer.add().setTitle(groups.collection[_interface.groupCount].participants[i])
                             }
 
                             groupInfo.setNumber(groups.collection[_interface.groupCount].num)
 
                         });
 
+
+                        setTimeout(function () {
+                            container.setActive(true);
+                        }, 2000)
                     } else {
                         container.setActive(false);
                     }
                 }
+            }, function() {
+                _cta.changeNumber('')
             });
 
             for (
@@ -371,7 +386,7 @@ var _app = (function () {
             ) {
                 members.add().setNumberBudget(i + 1);
                 _app.mebers.push(i);
-                groupListContainer.add().setTitle(groups.collection[this.groupCount].participants[i].region)
+                groupListContainer.add().setTitle(groups.collection[this.groupCount].participants[i])
             }
 
             groupInfo.setNumber(groups.collection[this.groupCount].num)
