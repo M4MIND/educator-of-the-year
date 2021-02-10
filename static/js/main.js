@@ -336,6 +336,7 @@ var _app = (function () {
 
                     buffer.add(groups.collection[_interface.groupCount].title,
                         {
+                            n: memberPosition + 1,
                             number: result.num,
                             task: result.title,
                             age: result.age,
