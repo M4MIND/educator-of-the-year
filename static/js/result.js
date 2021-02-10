@@ -1,12 +1,14 @@
 var theadListKeys = [
     '# Задания',
     'Задание',
+    'Возраст',
     'Регион',
 ]
 
 var tbodyListKeys = [
     'number',
     'task',
+    'age',
     'region',
 ]
 

@@ -338,6 +338,7 @@ var _app = (function () {
                         {
                             number: result.num,
                             task: result.title,
+                            age: result.age,
                             region: region,
                         }
                     )
